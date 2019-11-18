@@ -71,7 +71,16 @@
                     $('.user_center_link>img').attr('src', res.data.userPic);
                 }
             })
+            // 给退出按钮添加点击事件
+            $('.logout').on('click', function () {
+                // 1.删除token令牌
+                window.localStorage.removeItem('token');
+                // 2.跳转到登录页面
+                location.href = './login.html';
+            })
         })
+
+
 
     </script>
 </body>
