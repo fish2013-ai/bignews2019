@@ -87,6 +87,8 @@
             if (res.code == 200) {
               $('#myModal').modal();
               $('.modal-body').text(res.msg);
+              // 将token令牌储存到本地存储
+              localStorage.setItem('token', res.token);
               //跳转的网站的首页
               $('#myModal').on('hidden.bs.modal', function (e) {
                 window.location.href = './index.html';
@@ -98,8 +100,6 @@
           }
         })
       })
-
-
     })
   </script>
 </body>
