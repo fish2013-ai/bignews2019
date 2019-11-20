@@ -81,6 +81,23 @@
                 // 2.跳转到登录页面
                 location.href = './login.html';
             })
+
+            // 给左侧菜单栏添加点击事件
+            $('.level01').on('click', function () {
+                // 自己添加类active，兄弟删除类active
+                $(this).addClass('active').siblings('div').removeClass('active');
+                // 当点击 文章管理 时，切换ul的显示/隐藏
+                if ($(this).index() == 1) {
+                    $(this).find('b').toggleClass('rotate0');
+                    $('.level02').toggle();
+                    // 默认点击 文章列表 页面
+                    $('ul.level02 li:eq(0)>a')[0].click();
+                }
+            });
+            // 点击li 标签的时候文字变成黄色
+            $('ul.level02 li').on('click', function () {
+                $(this).addClass('active').siblings().removeClass('active');
+            })
         })
 
 
