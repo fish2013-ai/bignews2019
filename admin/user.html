@@ -114,10 +114,26 @@
                 processData: false,
                 success: function (res) {
                     if (res.code == 200) {
-                        // 刷新子页面
-                        window.location.reload();
-                        // 刷新父页面
-                        parent.window.location.reload();
+                        // // 刷新子页面
+                        // window.location.reload();
+                        // // 刷新父页面
+                        // parent.window.location.reload();
+                        $.ajax({
+                            type: 'get',
+                            url: BigNew.user_info,
+                            // headers: {
+                            //     Authorization: window.localStorage.getItem('token')
+                            // },
+                            success: function (res) {
+                                // 将用户名和头像渲染到相应位置
+                                parent.$('.user_info>img').attr('src', res.data.userPic);
+                                parent.$('.user_info>span').html('欢迎&nbsp;&nbsp;' + res.data.nickname);
+                                parent.$('.user_center_link>img').attr('src', res.data.userPic);
+                                // 刷新页面
+                                window.location.reload();
+                            }
+
+                        })
                     }
                 }
 
