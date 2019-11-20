@@ -70,4 +70,35 @@
     </div>
 </body>
 
+<script src="./libs/http.js"></script>
+<script>
+    $(function () {
+        $.get({
+            url: BigNew.user_detail,
+            success: function (res) {
+                if (res.code == 200) {
+                    // console.log(res);
+                    // for (var index in res.data) {
+                    //     $('input.' + key).val(res.data[key]);
+                    // }
+                    $('input.username').val(res.data.username);
+                    $('input.nickname').val(res.data.nickname);
+                    $('input.email').val(res.data.email);
+                    $('input.password').val(res.data.password);
+                    $('.user_pic').attr('src', res.data.userPic);
+                }
+
+            }
+        })
+
+        $('#exampleInputFile').on('change', function () {
+            var imgIcon = this.files[0];
+
+            var imgUrl = URL.createObjectURL(imgIcon);
+            $('.user_pic').attr('src', imgUrl);
+        })
+    })
+
+</script>
+
 </html>
