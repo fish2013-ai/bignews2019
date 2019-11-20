@@ -97,6 +97,33 @@
             var imgUrl = URL.createObjectURL(imgIcon);
             $('.user_pic').attr('src', imgUrl);
         })
+
+        $('.btn-edit').on('click', function (e) {
+            // 阻止button的默认提交跳转页面
+            e.preventDefault();
+            // 获取form表单，formate只能处理Dom对象
+            var form = $('#form')[0];
+            // 使用formate会转换成二进制数据
+            var userData = new FormData(form);
+            // 提交ajax请求
+            $.post({
+                url: BigNew.user_edit,
+                data: userData,
+                // 二进制数据不需要请求头，不需要设置请求类型
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.code == 200) {
+                        // 刷新子页面
+                        window.location.reload();
+                        // 刷新父页面
+                        parent.window.location.reload();
+                    }
+                }
+
+            })
+
+        })
     })
 
 </script>
