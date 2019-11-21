@@ -98,7 +98,7 @@
                 <td>{{$value.author}}</td>
                 <td>{{$value.category}}</td>
                 <td class="text-center">{{$value.date}}</td>
-                <td class="text-center">{{$value.sdate}}</td>
+                <td class="text-center">{{$value.state}}</td>
                 <td class="text-center">
                     <a href="article_edit.html?id={{$value.id}}" class="btn btn-default btn-xs">编辑</a>
                     <a href="javascript:void(0);"  data-id="{{$value.id}}" class="btn btn-danger btn-xs delete">删除</a>
@@ -164,6 +164,74 @@
                             })
                         }
                     });
+                }
+            })
+
+            // 给筛选按钮添加点击事件
+            $('#btnSearch').on('click', function (e) {
+                //阻止默认行为
+                e.preventDefault();
+                $.get({
+                    url: BigNew.article_query,
+                    data: {
+                        type: $('#selCategory').val(),
+                        state: $('#selStatus').val(),
+                        // 因在筛选前不确定当前页面在第几页，将其设为1，我们应该让用户先筛选的时候，从数据的第一页开始显示
+                        page: 1,
+                        perpage: perpage
+                    },
+                    success: function (res) {
+                        // 判断筛选的类名是否有数据
+                        if (res.code == 200 && res.data.totalCount != 0) {
+                            var htmlStr = template('art-list', res);
+                            $('tbody').html(htmlStr);
+                            $('#pagination-demo').show();
+                            //更改分页的总页码数
+                            $('#pagination-demo').twbsPagination('changeTotalPages', res.data.totalPage, 1);
+                        } else {
+                            $('tbody').html('<tr><td style="text-align: center;color:pink;font-size: 50px" colspan=6>亲，没有数据了哦</td></tr>');
+                            $('#pagination-demo').hide();
+                        }
+                    }
+                })
+            })
+
+
+            // 给删除按钮添加点击事件
+            // 因删除按钮是通过模板生成的，需要使用事件委派才可以获取
+            $('tbody').on('click', '.delete', function () {
+                // 获取当前要删除的文章的id
+                var deleteId = $(this).attr('data-id');
+                console.log(deleteId);
+
+                // 向客户确认是否删除
+                if (confirm('你确定要删除这篇文章吗？')) {
+                    // 发送删除请求
+                    $.post({
+                        url: BigNew.article_delete,
+                        data: {
+                            id: deleteId
+                        },
+                        success: function (res) {
+                            if (res.code == 204) {
+                                // 删除成功，重新发送文章搜索请求，渲染页面
+                                $.get({
+                                    url: BigNew.article_query,
+                                    data: {
+                                        type: $('#selCategory').val(),
+                                        state: $('#selStatus').val(),
+                                        page: page,
+                                        perpage: perpage
+                                    },
+                                    success: function (res) {
+                                        var htmlStr = template('art-list', res);
+                                        $('tbody').html(htmlStr);
+                                        $('#pagination-demo').twbsPagination('changeTotalPages', res.data.totalPage, 1);
+                                    }
+                                });
+                            }
+                        }
+                    })
                 }
             })
         })
