@@ -56,7 +56,7 @@
     <div class="main_con clearfix">
         <div class="left_con">
             <ul class="focus_list">
-                <li class="first">
+                <!-- <li class="first">
                     <a href="#"><img src="images/pic01.jpg" alt=""></a>
                     <p>图片说明</p>
                 </li>
@@ -75,7 +75,7 @@
                 <li>
                     <a href="#"><img src="images/pic06.jpg" alt=""></a>
                     <p>图片说明</p>
-                </li>
+                </li> -->
             </ul>
 
             <div class="common_title">
@@ -84,7 +84,7 @@
             </div>
 
             <div class="common_news">
-                <div class="common_news_list">
+                <!-- <div class="common_news_list">
                     <a href="#" class="list_pic"><img src="images/pic09.jpg" alt=""></a>
                     <h4><a href="#">亚马逊金融试水中国？背后却是和华尔街的“金融战争” </a></h4>
                     <p>亚马逊抛弃了中国的买家们，却难以割舍庞大的卖家市场，有消息指出亚马逊中国将针对中国庞大的卖家群体推出一项贷款推荐计划。在连续对印度、墨西哥等新兴市场大力推广线上支付服务后，亚马逊金融试水进军中国市场的信号终于被放出。
@@ -142,7 +142,7 @@
                             )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( 10 )</span>
                         <b>发布于 2018-08-30 12:18:58</b>
                     </div>
-                </div>
+                </div> -->
             </div>
 
         </div>
@@ -150,13 +150,13 @@
             <div class="common_wrap">
                 <h3><i class="fa fa-bar-chart"></i> 一周热门排行</h3>
                 <ul class="content_list hotrank_list">
-                    <li><span class="first">1</span><a href="#">神奇的水滴摄影，泡泡中的世界泡泡中的世界</a></li>
+                    <!-- <li><span class="first">1</span><a href="#">神奇的水滴摄影，泡泡中的世界泡泡中的世界</a></li>
                     <li><span class="second">2</span><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
                     <li><span class="third">3</span><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
                     <li><span>4</span><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
                     <li><span>5</span><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
                     <li><span>6</span><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
-                    <li><span>7</span><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
+                    <li><span>7</span><a href="#">神奇的水滴摄影，泡泡中的世界</a></li> -->
                 </ul>
             </div>
             <div class="common_wrap">
@@ -227,6 +227,95 @@
     <script src="./js/template-web.js"></script>
     <!-- 引入jq文件 -->
     <script src="./js/jquery-1.12.4.min.js"></script>
+
+    <!-- 热点图片模板 -->
+    <script type="text/html" id="hot_list">
+        {{each data as val index}}
+        {{if index==0}}
+            <li class="first">
+        {{else}}
+            <li>
+        {{/if}}
+                <a href="./article.html?id={{val.id}}"><img src="{{val.cover}}" alt=""></a>
+                <p>{{val.title}}</p>
+            </li>
+        {{/each}}
+        </script>
+
+    <!-- 最新资讯模板 -->
+    <script type="text/html" id="news_list">
+            {{each data}}
+            <div class="common_news_list">
+                    <a href="./article.html?id={{$value.id}}" class="list_pic"><img src="{{$value.cover}}" alt=""></a>
+                    <h4><a href="./article.html?id={{$value.id}}">{{$value.title}}</a></h4>
+                    <p>{{@ $value.intro}}
+                    </p>
+                    <div class="new_info">
+                        <span>标签：{{$value.category}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;阅读( {{$value.read}}
+                            )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( {{$value.comments}} )</span>
+                        <b>发布于 {{$value.date}}</b>
+                    </div>
+                </div>
+            {{/each}}
+        
+        </script>
+
+    <!-- 一周热门排行模板 -->
+    <script type="text/html" id="hotrank_list">
+        {{each data as val index}}
+            <li>
+                {{if index==0}}
+                <span class="first">
+                        {{else if index==1}}
+                <span class="second">
+                        {{else if index==2}}
+                <span class="third">
+                {{else}}
+                <span>
+                {{/if}}
+                  {{index+1}}</span>
+                <a href="./article.html?id={{val.id}}">{{val.title}}</a>
+            </li>
+        {{/each}}
+    </script>
+
+
+
+    <script>
+        $(function () {
+            // 发送热点图请求
+            $.get({
+                url: 'http://localhost:8080/api/v1/index/hotpic',
+                success: function (res) {
+                    var htmlStr = template('hot_list', res);
+                    $('ul.focus_list').html(htmlStr);
+                }
+            })
+            // //  发送最新资讯请求
+            $.get({
+                url: 'http://localhost:8080/api/v1/index/latest',
+                success: function (res) {
+                    var htmlStr = template('news_list', res);
+                    $('.common_news').html(htmlStr);
+                }
+            })
+
+            // 文章热门排行请求
+            $.get({
+                url: 'http://localhost:8080/api/v1/index/rank',
+                success: function (res) {
+                    if (res.code == 200) {
+                        var htmlStr = template('hotrank_list', res);
+                        console.log(htmlStr);
+
+                        $('ul.hotrank_list').html(htmlStr);
+                    }
+                }
+            })
+
+
+        })
+    </script>
 </body>
 
 </html>
