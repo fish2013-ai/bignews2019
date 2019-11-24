@@ -162,7 +162,7 @@
             <div class="common_wrap">
                 <h3><i class="fa fa-commenting-o"></i> 最新评论</h3>
                 <ul class="content_list comment_list">
-                    <li>
+                    <!-- <li>
                         <span>山</span>
                         <b><em>山治</em> 9个月前(08-14)说:</b>
                         <strong>挺会玩的</strong>
@@ -191,19 +191,19 @@
                         <span>乔</span>
                         <b><em>乔峰</em> 9个月前(08-14)说:</b>
                         <strong>挺会玩的</strong>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             <div class="common_wrap">
                 <h3><i class="fa fa-bullseye"></i> 焦点关注</h3>
                 <ul class="content_list guanzhu_list">
-                    <li><a href="#">神奇的水滴摄影，泡泡中的世界泡泡中的世界</a></li>
+                    <!-- <li><a href="#">神奇的水滴摄影，泡泡中的世界泡泡中的世界</a></li>
                     <li><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
                     <li><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
                     <li><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
                     <li><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
                     <li><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
-                    <li><a href="#">神奇的水滴摄影，泡泡中的世界</a></li>
+                    <li><a href="#">神奇的水滴摄影，泡泡中的世界</a></li> -->
                 </ul>
             </div>
         </div>
@@ -279,7 +279,23 @@
         {{/each}}
     </script>
 
+    <!-- 最新评论 -->
+    <script type="text/html" id="comment_list">
+      {{each data}}
+        <li>
+          <span>{{$value.author.slice(0,1)}}</span>
+          <b><em>{{$value.author}}</em> 9个月前({{$value.date}})说:</b>
+          <strong>{{$value.intro}}</strong>
+        </li>
+      {{/each}}
+    </script>
 
+    <!-- 焦点关注 -->
+    <script type="text/html" id="guanzhu_list">
+        {{each data}}
+        <li><a href="./article.html?id={{$value.id}}">{{$value.intro}}</a></li>
+        {{/each}}
+    </script>
 
     <script>
         $(function () {
@@ -306,13 +322,30 @@
                 success: function (res) {
                     if (res.code == 200) {
                         var htmlStr = template('hotrank_list', res);
-                        console.log(htmlStr);
-
                         $('ul.hotrank_list').html(htmlStr);
                     }
                 }
             })
 
+            // 最新评论
+            $.get({
+                url: 'http://localhost:8080/api/v1/index/latest_comment',
+                success: function (res) {
+                    if (res.code == 200) {
+                        var htmlStr = template('comment_list', res);
+                        $('ul.comment_list').html(htmlStr);
+                    }
+                }
+            })
+
+            // 焦点关注
+            $.get({
+                url: 'http://localhost:8080/api/v1/index/attention',
+                success: function (res) {
+                    var htmlStr = template('guanzhu_list', res);
+                    $('ul.guanzhu_list').html(htmlStr)
+                }
+            })
 
         })
     </script>
